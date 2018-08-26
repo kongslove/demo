@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yc.dao.OprecordMapper" >
+  <resultMap id="BaseResultMap" type="com.yc.po.Oprecord" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="accountid" property="accountid" jdbcType="INTEGER" />
+    <result column="opmoney" property="opmoney" jdbcType="DOUBLE" />
+    <result column="optime" property="optime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, accountid, opmoney, optime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from oprecord
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from oprecord
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yc.po.Oprecord" >
+    insert into oprecord (id, accountid, opmoney, 
+      optime)
+    values (#{id,jdbcType=INTEGER}, #{accountid,jdbcType=INTEGER}, #{opmoney,jdbcType=DOUBLE}, 
+      #{optime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yc.po.Oprecord" >
+    insert into oprecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="accountid != null" >
+        accountid,
+      </if>
+      <if test="opmoney != null" >
+        opmoney,
+      </if>
+      <if test="optime != null" >
+        optime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="accountid != null" >
+        #{accountid,jdbcType=INTEGER},
+      </if>
+      <if test="opmoney != null" >
+        #{opmoney,jdbcType=DOUBLE},
+      </if>
+      <if test="optime != null" >
+        #{optime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yc.po.Oprecord" >
+    update oprecord
+    <set >
+      <if test="accountid != null" >
+        accountid = #{accountid,jdbcType=INTEGER},
+      </if>
+      <if test="opmoney != null" >
+        opmoney = #{opmoney,jdbcType=DOUBLE},
+      </if>
+      <if test="optime != null" >
+        optime = #{optime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yc.po.Oprecord" >
+    update oprecord
+    set accountid = #{accountid,jdbcType=INTEGER},
+      opmoney = #{opmoney,jdbcType=DOUBLE},
+      optime = #{optime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

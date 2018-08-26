@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!-- 组件扫描 -->
+	<context:component-scan base-package="com.yc"/>
+    <!-- 引入数据库参数文件 -->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!-- 配制数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+    	<property name="driverClassName" value="${mysql.driver}"></property>
+    	<property name="url" value="${mysql.url}"></property>
+    	<property name="username" value="${mysql.name}"></property>
+    	<property name="password" value="${mysql.password}"></property>
+    	<!-- 初始化连接数 -->
+		<property name="initialSize" value="30"/>
+		<!-- 最大连接数 -->
+		<property name="maxOpenPreparedStatements" value="150"/>
+		<!-- 最小空闲连接 -->
+		<property name="minIdle" value="10"/>
+		<!-- 最大空闲连接 -->
+		<property name="maxIdle" value="30"/>
+		<!-- 等待超时时间单位毫秒 -->
+		<property name="maxWaitMillis" value="500"/>
+    </bean>
+    <!-- 配制会话工厂 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    	<!-- 注入数据源 -->
+    	<property name="dataSource" ref="dataSource"></property>
+    	<!-- 引入mybatis配置文件 -->
+    	<property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+    <!-- 配制数据映射器 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 为映射器接口文件设置基本的包路径。 你可以使用分号或逗号 作为分隔符设置多于一个的包路径。 -->
+		<property name="basePackage" value="com.yc.dao"/>
+    </bean>
+    <!-- 配制事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!-- 注解版声明式事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- xml版声明式事务管理 -->
+    <!-- 配置事务增强 -->
+   <!--  <tx:advice id="advice" transaction-manager="transactionManager">
+    	<tx:attributes>
+    		Spring默认异常处理方式:如果编译异常不回滚，如果是运行时异常就回滚
+    		<tx:method name="del*"/>
+    		<tx:method name="update*"/>
+    		<tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED" timeout="25"/>
+    		<tx:method name="find*" propagation="SUPPORTS" read-only="true" isolation="DEFAULT" timeout="20"/>
+    		<tx:method name="drawMoney" no-rollback-for="NumberFormatException" rollback-for="Exception"/>
+    		<tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" timeout="25"/>
+    	</tx:attributes>
+    </tx:advice> -->
+   <!--  配置事务切面 -->
+    <!-- <aop:config>
+    	切入点
+    	<aop:pointcut expression="execution(public * com.yc.service.*.*(..))" id="point"/>
+    	<aop:advisor advice-ref="advice" pointcut-ref="point"/>
+    </aop:config> -->
+</beans>
