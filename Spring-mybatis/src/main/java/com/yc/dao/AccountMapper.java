@@ -2,6 +2,7 @@ package com.yc.dao;
 
 import com.yc.po.Account;
 
+
 public interface AccountMapper {
     int deleteByPrimaryKey(Integer accountid);
 
