@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>青鸟租房 - 用户管理</title>
+<link type="text/css" rel="stylesheet"
+	th:href="@{/css/style.css}" />
+<script type="text/javascript" th:src="@{/js/function.js}"></script>
+<script type="text/javascript">
+	
+	function update(id) {
+		open("/page/update?id=" + id);
+	}
+
+	function del(id) {
+		var isDel = confirm("是否确定删除");
+		if (isDel) {
+			location.href = "/page/HouseBean_del?id=" + id ;
+		}
+	}
+</script>
+</head>
+<body>
+	<div id="header" class="wrap">
+		<div id="logo">
+			<img th:src="@{/images/logo.gif}" />
+		</div>
+		<div class="search">
+			<label class="ui-green"><input onclick="location.href='../page/add'" type="button"
+				name="search" value="发布房屋信息" /></label> <label class="ui-green"><input
+				type="button" name="search" value="退       出"
+				onclick='location.href="exitLogin"' /></label>
+		</div>
+	</div>
+	<div class="main wrap">
+		<div id="houseArea">
+			<table class="house-list">
+				<tr th:each="h:${pageInfo.list}">
+					<td class="house-thumb"><span><a
+							th:href="@{'/page/show?id='+${h.id}}"><img
+								th:src="@{/images/thumb_house.gif}" /></a></span></td>
+					<td>
+						<dl>
+							<dt>
+								<a th:href="@{'/page/show?id='+${h.id}}" th:text="${h.title}">单身狗窝</a>
+							</dt>
+							<dd>
+							<div th:if="${h.district.name}"><span th:text="${h.district.name}"></span></div>
+							<div th:if="${h.street.name}"><span th:text="${h.street.name}"></span></div>
+							<span th:text="${h.floorage}+'平米'"></span>
+								<br /> 联系方式：<span th:text="${h.contact}"></span>
+							</dd>
+						</dl>
+					</td>
+					<td class="house-type"><label class="ui-green"><input
+							type="button" th:onclick="'javascript:update('+${h.id}+')'" value="修    改" /></label></td>
+					<td class="house-price"><label class="ui-green"><input
+							type="button" th:onclick="'javascript:del('+${h.id}+')'" value="删    除" /></label></td>
+				</tr>
+
+
+
+			</table>
+			<div class="pager">
+				<ul >
+					<li class="current"><a dojoType="struts:BindAnchor"
+						validate="false" ajaxAfterValidation="false" 
+						href="/house/list" targets="houseArea"
+						showError="true" parseContent="true"> 首页</a> 
+					</li>
+					<li class="current"><a dojoType="struts:BindAnchor"
+						validate="false" ajaxAfterValidation="false"
+						th:href="@{'/house/list?n='+${pageInfo.prePage}}"
+						targets="houseArea" showError="true" parseContent="true"> 上一页</a>
+						
+					</li>
+					
+					<li class="current" th:each="num:${pageInfo.navigatepageNums}">
+						<a th:href="@{'/house/list?n='+${num}}" th:text="${num}"></a>
+					</li>
+					<li class="current"><a dojoType="struts:BindAnchor"
+						validate="false" ajaxAfterValidation="false"
+						id="widget_1128401883" th:href="@{'/house/list?n='+${pageInfo.nextPage}}"
+						targets="houseArea" showError="true" parseContent="true"> 下一页</a>
+					</li>
+					<li class="current"><a dojoType="struts:BindAnchor"
+						validate="false" ajaxAfterValidation="false"
+						id="widget_1097434648" th:href="@{'/house/list?n='+${pageInfo.prePage}}"
+						targets="houseArea" showError="true" parseContent="true"> 尾页</a> 
+					</li>
+				</ul>
+				<span class="total">1/1页</span>
+			</div>
+		</div>
+	</div>
+	<div id="footer" class="wrap">
+		<dl>
+			<dt>青鸟租房 &copy; 2015 源辰信息科技有限公司 湘ICP证1000001号</dt>
+			<dd>关于我们 · 联系方式 · 意见反馈 · 帮助中心</dd>
+		</dl>
+	</div>
+</body>
+</html>

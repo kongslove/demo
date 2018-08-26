@@ -1,0 +1,120 @@
+﻿
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8">
+<title>青鸟租房 -发布房屋信息</title>
+<link type="text/css" rel="stylesheet" th:href="@{/css/style.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/My97DatePicker/style.css}" />
+<script type="text/javascript" th:src="@{/js/function.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/add.js}"></script>
+<script type="text/javascript" th:src="@{/My97DatePicker/WdatePicker.js}"></script>
+<script type="text/javascript">
+	function onchangeDistrict(id){
+		console.info("ID:"+id);
+		var option="";
+		$.post("findStreet_DistrictId",{id:id},function(data){
+			$.each(data,function(index,item){
+				option+="<option value='"+item.id+"'>"+item.name+"</option>";
+			})
+			$("#streetId").append($(option));
+		},"json")
+	}
+</script>
+</head>
+<body>
+	<div id="header" class="wrap">
+		<div id="logo">
+			<img th:src="@{/images/logo.gif}" />
+		</div>
+
+	</div>
+	<div id="regLogin" class="wrap">
+		<div class="dialog">
+			<dl class="clearfix">
+				<dt>新房屋信息发布</dt>
+				<dd class="past">填写房屋信息</dd>
+			</dl>
+			<div class="box">
+				<form id="House_add_action" name="House_add_action"
+					th:object="${house}" action="House_add" method="post">
+					<div class="infos">
+						<table class="field">
+							<tr>
+								<td class="field">标 题：</td>
+								<td><input type="text" th:field="*{title}" class="text" /></td>
+							</tr>
+							<tr>
+								<td class="field">户 型：</td>
+								<td><select class="text" th:field="*{typeId}">
+
+										<option th:each="houseType:${houseTypes}"
+											th:value="${houseType.id}" th:text="${houseType.name}"></option>
+								</select><span th:if="${#fields.hasErrors('typeId')}"
+									th:errors="*{typeId}">Name error</span></td>
+							</tr>
+							<tr>
+								<td class="field">面 积：</td>
+								<td><input type="text" th:field="*{floorage}" class="text" /></td>
+							</tr>
+							<tr>
+								<td class="field">价 格：</td>
+								
+								<td><input type="text" th:field="*{price}" class="text" /><span
+									th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span></td>
+							</tr>
+
+							<tr>
+								<td class="field">房产证日期：</td>
+								<td><input type="text"  class="text" th:field="*{pubdate}" onfocus="WdatePicker({lang:'en'})"/>
+									<span th:if="${#fields.hasErrors('pubdate')}"
+									th:errors="*{pubdate}">Name error</span></td>
+							</tr>
+
+							<tr>
+								<td class="field">位 置：</td>
+								<td>区：<select class="text"
+									onchange="onchangeDistrict(this.value)" th:field="*{districtId}">
+
+										<option th:each="district:${districts}"
+											th:text="${district.name}" th:value="${district.id}"></option>
+								</select> 街：<select class="text" th:field="*{streetId}">
+										<option value="0">--请选择--</option>
+								</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="field">联系方式：</td>
+								<td><input type="text" th:field="*{contact}" class="text" /><span
+									th:if="${#fields.hasErrors('contact')}" th:errors="*{contact}">Name
+										error</span></td>
+							</tr>
+							<tr>
+								<td class="field">详细信息：</td>
+								<td><textarea th:field="*{description}"></textarea></td>
+							</tr>
+						</table>
+						<div class="buttons">
+							<input type="submit" id="House_add_action_0" value="立即发布" />
+
+						</div>
+					</div>
+				</form>
+
+
+
+
+			</div>
+		</div>
+	</div>
+	<div id="footer" class="wrap">
+		<dl>
+			<dt>青鸟租房 &copy; 2015 源辰信息科技有限公司 湘ICP证1000001号</dt>
+			<dd>关于我们 · 联系方式 · 意见反馈 · 帮助中心</dd>
+		</dl>
+	</div>
+</body>
+</html>

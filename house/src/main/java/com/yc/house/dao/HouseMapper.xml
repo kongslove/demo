@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yc.house.dao.HouseMapper" >
+  <resultMap id="BaseResultMap" type="com.yc.house.po.House" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="TYPE_ID" property="typeId" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DOUBLE" />
+    <result column="PUBDATE" property="pubdate" jdbcType="DATE" />
+    <result column="FLOORAGE" property="floorage" jdbcType="INTEGER" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="STREET_ID" property="streetId" jdbcType="INTEGER" />
+     <result column="DISTRICT_ID" property="districtId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.yc.house.po.House" extends="BaseResultMap" >
+    <result column="DESCRIPTION" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap type="com.yc.house.po.House" id="ResultMapWithAddress" extends="ResultMapWithBLOBs">
+  	<collection property="district" ofType="com.yc.house.po.District">
+  		<id property="id" column="DID"/>
+  		<result property="name" column="DNAME" />
+  	</collection>
+  	<collection property="street" ofType="com.yc.house.po.Street">
+  		<id property="id" column="ID"/>
+  		<result property="name" column="NAME" />
+  	</collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USER_ID, TYPE_ID, TITLE, PRICE, PUBDATE, FLOORAGE, CONTACT, STREET_ID,DISTRICT_ID
+  </sql>
+  <sql id="Blob_Column_List" >
+    DESCRIPTION
+  </sql>
+  <select id="fingAllHouse" resultMap="ResultMapWithAddress" >
+<!--   select h.*,s.NAME,d.NAME AS DNAME  -->
+<!--   	from house h,street s,district d where h.DISTRICT_ID=d.ID and h.STREET_ID = s.ID  -->
+  	select h.*,s.NAME,d.NAME AS DNAME 
+  	from house h LEFT JOIN street s on h.STREET_ID =s.ID  LEFT JOIN district d on d.ID = h.DISTRICT_ID ;
+  </select>
+  <select id="getFullHouseInfo" resultMap="ResultMapWithAddress" parameterType="java.lang.Integer">
+  	select h.*,s.NAME,d.NAME AS DNAME 
+  	from house h,street s,district d where h.DISTRICT_ID=d.ID and h.STREET_ID = s.ID and h.ID=#{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from house
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from house
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yc.house.po.House" >
+    insert into house (ID, USER_ID, TYPE_ID, 
+      TITLE, PRICE, PUBDATE, 
+      FLOORAGE, CONTACT, STREET_ID,DISTRICT_ID, 
+      DESCRIPTION)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{pubdate,jdbcType=DATE}, 
+      #{floorage,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{streetId,jdbcType=INTEGER},
+       #{districtId,jdbcType=INTEGER}, 
+      #{description,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yc.house.po.House" >
+    insert into house
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="typeId != null" >
+        TYPE_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="pubdate != null" >
+        PUBDATE,
+      </if>
+      <if test="floorage != null" >
+        FLOORAGE,
+      </if>
+      <if test="contact != null" >
+        CONTACT,
+      </if>
+      <if test="streetId != null" >
+        STREET_ID,
+      </if>
+      <if test="districtId != null" >
+        DISTRICT_ID,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="pubdate != null" >
+        #{pubdate,jdbcType=DATE},
+      </if>
+      <if test="floorage != null" >
+        #{floorage,jdbcType=INTEGER},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="streetId != null" >
+        #{streetId,jdbcType=INTEGER},
+      </if>
+      <if test="districtId != null" >
+        #{districtId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yc.house.po.House" >
+    update house
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null" >
+        TYPE_ID = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="pubdate != null" >
+        PUBDATE = #{pubdate,jdbcType=DATE},
+      </if>
+      <if test="floorage != null" >
+        FLOORAGE = #{floorage,jdbcType=INTEGER},
+      </if>
+      <if test="contact != null" >
+        CONTACT = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="streetId != null" >
+        STREET_ID = #{streetId,jdbcType=INTEGER},
+      </if>
+      <if test="districtId != null" >
+        DISTRICT_ID = #{districtId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yc.house.po.House" >
+    update house
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      TYPE_ID = #{typeId,jdbcType=INTEGER},
+      TITLE = #{title,jdbcType=VARCHAR},
+      PRICE = #{price,jdbcType=DOUBLE},
+      PUBDATE = #{pubdate,jdbcType=DATE},
+      FLOORAGE = #{floorage,jdbcType=INTEGER},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      STREET_ID = #{streetId,jdbcType=INTEGER},
+       DISTRICT_ID = #{districtId,jdbcType=INTEGER},
+      DESCRIPTION = #{description,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yc.house.po.House" >
+    update house
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      TYPE_ID = #{typeId,jdbcType=INTEGER},
+      TITLE = #{title,jdbcType=VARCHAR},
+      PRICE = #{price,jdbcType=DOUBLE},
+      PUBDATE = #{pubdate,jdbcType=DATE},
+      FLOORAGE = #{floorage,jdbcType=INTEGER},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      STREET_ID = #{streetId,jdbcType=INTEGER},
+      DISTRICT_ID = #{districtId,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
