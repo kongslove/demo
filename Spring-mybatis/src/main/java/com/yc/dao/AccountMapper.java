@@ -5,6 +5,7 @@ import com.yc.po.Account;
 
 public interface AccountMapper {
     int deleteByPrimaryKey(Integer accountid);
+    
     int insert(Account record);
 
     int insertSelective(Account record);
